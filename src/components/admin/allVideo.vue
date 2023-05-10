@@ -157,8 +157,8 @@ export default {
             }
         }).then(response => {
             if ((response.data.status === 200)) {
-                this.data = response.data.data
-                // JSON.parse(
+                this.data = this.returnjson(response.data.data)
+                // JSON.parse(response.data.data)
                 this.loading = false;
             }
         }).catch(error => {
@@ -320,7 +320,16 @@ export default {
             this.$cookies.remove("pwd")
             this.$cookies.remove("username")
             this.$router.push('/login')
+        },
+        returnjson(json) {
+            if ((typeof json) === String) {
+                return JSON.parse(json)
+            } else {
+                return json
+            }
+
         }
+
     }
 }
 </script>
@@ -361,11 +370,11 @@ export default {
         <Button style="margin-bottom: 10px; width: 80px; margin-left: 20px" type="primary" @click="add">添加
         </Button>
         <Drawer
-            v-model="value"
-            :mask-closable="false"
-            :styles="styles"
-            title="编辑"
-            width="730"
+                v-model="value"
+                :mask-closable="false"
+                :styles="styles"
+                title="编辑"
+                width="730"
         >
             <Form :model="formData">
                 <Row :gutter="32">
@@ -418,12 +427,12 @@ export default {
             </div>
         </Drawer>
         <Table
-            :columns="columns"
-            :data="data"
-            border
-            context-menu
-            show-context-menu
-            @on-contextmenu="handleContextMenu"
+                :columns="columns"
+                :data="data"
+                border
+                context-menu
+                show-context-menu
+                @on-contextmenu="handleContextMenu"
         >
             <template #contextMenu>
                 <DropdownItem @click="">参演列表</DropdownItem>
@@ -432,31 +441,31 @@ export default {
             </template>
         </Table>
         <Modal
-            v-model="modal_delete"
-            :loading="model_loading"
-            title="提示"
-            @on-ok="modal_delete_ok">
+                v-model="modal_delete"
+                :loading="model_loading"
+                title="提示"
+                @on-ok="modal_delete_ok">
             <p>确定删除？</p>
         </Modal>
         <Modal
-            v-model="modal_add"
-            :loading="model_loading"
-            title="提示"
-            @on-ok="modal_add_ok">
+                v-model="modal_add"
+                :loading="model_loading"
+                title="提示"
+                @on-ok="modal_add_ok">
             <p>确定添加？</p>
         </Modal>
         <Modal
-            v-model="modal_update"
-            :loading="model_loading"
-            title="提示"
-            @on-ok="modal_update_ok">
+                v-model="modal_update"
+                :loading="model_loading"
+                title="提示"
+                @on-ok="modal_update_ok">
             <p>确定更新？</p>
         </Modal>
         <Modal
-            v-model="modal_exitLogin"
-            :loading=false
-            title="提示"
-            @on-ok="modal_exitLogin_ok">
+                v-model="modal_exitLogin"
+                :loading=false
+                title="提示"
+                @on-ok="modal_exitLogin_ok">
             <p>确定退出登录？</p>
         </Modal>
     </Content>
@@ -466,40 +475,40 @@ export default {
 
 
 .gridtable {
-    font-family: verdana, arial, sans-serif;
-    font-size: 11px;
-    color: #333333;
-    border-width: 1px;
-    border-color: #666666;
-    border-collapse: collapse;
+  font-family: verdana, arial, sans-serif;
+  font-size: 11px;
+  color: #333333;
+  border-width: 1px;
+  border-color: #666666;
+  border-collapse: collapse;
 }
 
 .gridtable th {
-    border-width: 1px;
-    padding: 8px;
-    border-style: solid;
-    border-color: #666666;
-    background-color: #dedede;
-    width: 90px;
+  border-width: 1px;
+  padding: 8px;
+  border-style: solid;
+  border-color: #666666;
+  background-color: #dedede;
+  width: 90px;
 }
 
 .gridtable td {
-    width: 90px;
-    border-width: 1px;
-    padding: 8px;
-    border-style: solid;
-    border-color: #666666;
-    background-color: #ffffff;
+  width: 90px;
+  border-width: 1px;
+  padding: 8px;
+  border-style: solid;
+  border-color: #666666;
+  background-color: #ffffff;
 }
 
 .demo-drawer-footer {
-    width: 100%;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    border-top: 1px solid #e8e8e8;
-    padding: 10px 16px;
-    text-align: right;
-    background: #fff;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  border-top: 1px solid #e8e8e8;
+  padding: 10px 16px;
+  text-align: right;
+  background: #fff;
 }
 </style>
