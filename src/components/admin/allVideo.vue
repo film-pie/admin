@@ -1,11 +1,34 @@
 <script>
-import {DropdownItem, MenuGroup, MenuItem, Space} from "view-ui-plus";
+import {
+    Avatar,
+    Breadcrumb,
+    BreadcrumbItem,
+    Content,
+    Drawer,
+    Dropdown,
+    DropdownItem,
+    DropdownMenu,
+    FormItem,
+    Icon,
+    MenuGroup,
+    MenuItem,
+    Modal,
+    Row,
+    Space
+} from "view-ui-plus";
 import {transferIndex} from "view-ui-plus/src/utils/transfer-queue";
 import axios from "axios";
 import appConfig from '../../../public/config/config'
 
 export default {
-    components: {DropdownItem, Space, MenuGroup, MenuItem},
+    components: {
+        FormItem,
+        Drawer,
+        Row,
+        Content,
+        DropdownMenu,
+        Icon, Avatar, Dropdown, BreadcrumbItem, Breadcrumb, Modal, DropdownItem, Space, MenuGroup, MenuItem
+    },
     data() {
         return {
             isCollapsed: false,
@@ -80,6 +103,9 @@ export default {
             formData: {
                 title: '',
                 info: '',
+                visit: 0,
+                download: 0,
+                score: 0,
                 src: '',
                 img: '',
                 user: []
@@ -111,18 +137,17 @@ export default {
                 }
             ],
             uid: 0,
-            works: ''
+            works: '',
+            update: false,
+            modal_delete: false,
+            modal_update: false,
+            modal_add: false,
+            model_loading: true,
+            modal_exitLogin: false
         };
 
     },
-    computed: {
-        menuitemClasses: function () {
-            return [
-                'menu-item',
-                this.isCollapsed ? 'collapsed-menu' : ''
-            ]
-        }
-    },
+    computed: {},
     created() {
         this.pwd = this.$cookies.get('pwd');
         this.username = this.$cookies.get('username');
@@ -133,7 +158,7 @@ export default {
         }).then(response => {
             if ((response.data.status === 200)) {
                 this.data = response.data.data
-                // JSON.parse()
+                // JSON.parse(
                 this.loading = false;
             }
         }).catch(error => {
@@ -163,24 +188,21 @@ export default {
             this.$Message.info('Click edit of line' + this.contextLine);
         },
 
-        show() {
-            this.u_data = []
-            this.data[this.contextLine].user.forEach(videoUser => {
-                console.log(videoUser.uid)
-                console.log(this.data)
-                // console.log(this.userdata)
-                const user = this.userdata.find(u => u.uid === videoUser.uid)
-                this.u_data.push({"works": videoUser.works, "name": user.uname, "info": user.info})
-            })
-            this.u_table = ''
-            this.u_data.forEach(element => {
-                this.u_table += '<tr><td>' + element.works + '</td><td>' + element.name + '</td><td>' + element.info + '</td></tr>';
-            })
-            this.$Modal.info({
-                title: 'User Info',
-                content: '<table class="gridtable"><tr><th>职位</th><th>姓名</th><th>描述</th></tr>' + this.u_table + '</table>'
-            })
-        },
+        // show() {
+        //     this.u_data = []
+        //     this.data[this.contextLine].user.forEach(videoUser => {
+        //         const user = this.userdata.find(u => u.uid === videoUser.uid)
+        //         this.u_data.push({"works": videoUser.works, "name": user.uname, "info": user.info})
+        //     })
+        //     this.u_table = ''
+        //     this.u_data.forEach(element => {
+        //         this.u_table += '<tr><td>' + element.works + '</td><td>' + element.name + '</td><td>' + element.info + '</td></tr>';
+        //     })
+        //     this.$Modal.info({
+        //         title: 'User Info',
+        //         content: '<table class="gridtable"><tr><th>职位</th><th>姓名</th><th>描述</th></tr>' + this.u_table + '</table>'
+        //     })
+        // },
         transferIndex() {
             return transferIndex
         },
@@ -191,12 +213,7 @@ export default {
             this.visible = false;
         },
         exitLogin() {
-            this.$cookies.remove("pwd")
-            this.$cookies.remove("username")
-            this.$router.push('/login')
-        },
-        getUser() {
-
+            this.modal_exitLogin = true
         },
         styles() {
             if (this.ellipsis) {
@@ -208,30 +225,51 @@ export default {
             }
         },
         addSubmit() {
-            axios.get(this.apiUrl + '/addVideo', {
+            if (!this.update) {
+                this.modal_add = true
+            } else {
+                this.modal_update = true
+            }
+        },
+        updateVideoList() {
+            axios.get(this.apiUrl + '/editVideoList', {
                 params: {
                     pwd: this.pwd,
-                    title: this.formData.title,
-                    info: this.formData.info,
-                    src: this.formData.src,
-                    img: this.formData.img,
-                    user: this.formData.user
+                    data: this.data
                 }
             }).then(response => {
-                console.log(response.data.status)
                 if ((response.data.status === 200)) {
-                    console.log(response.data.msg)
+                    this.$Message["success"]({
+                        background: true,
+                        content: '成功'
+                    });
                 } else {
-                    console.log('上传失败')
+                    this.$Message['error']({
+                        background: true,
+                        content: '失败'
+                    });
                 }
 
             }).catch(error => {
                 console.log(error);
+                this.$Message['error']({
+                    background: true,
+                    content: '发生错误'
+                });
             });
-            // this.$router.go(0)
-            this.$router.push({path: this.$route.path, query: {t: Date.now()}})
         },
         add() {
+            this.update = false
+            this.formData = {
+                title: '',
+                info: '',
+                visit: 0,
+                download: 0,
+                score: 0,
+                src: '',
+                img: '',
+                user: []
+            }
             this.cityList = []
             this.userdata.forEach(element => {
                 this.cityList.push({"value": element.uid, "label": element.uname})
@@ -239,14 +277,50 @@ export default {
             this.value = true
         },
         addUser() {
-            // console.log(this.uid+"\t"+this.works)
             this.formData.user.push({"uid": this.uid, "works": this.works})
         },
         remove(index) {
             this.formData.user.splice(index, 1);
+        },
+        updateUser() {
+            this.update = true
+            this.cityList = []
+            this.userdata.forEach(element => {
+                this.cityList.push({"value": element.uid, "label": element.uname})
+            })
+            this.formData = this.data[this.contextLine]
+            this.value = true
+        },
+        deleteUser() {
+            this.modal_delete = true
+        },
+        modal_delete_ok() {
+            setTimeout(() => {
+                this.$router.push({path: this.$route.path, query: {t: Date.now()}})
+            }, 500);
+            this.data.splice(this.contextLine, 1);
+            this.updateVideoList()
+        },
+        modal_add_ok() {
+            setTimeout(() => {
+                this.$router.push({path: this.$route.path, query: {t: Date.now()}})
+            }, 500);
+            this.data.push(this.formData)
+            this.updateVideoList()
+        },
+        modal_update_ok() {
+            setTimeout(() => {
+                this.$router.push({path: this.$route.path, query: {t: Date.now()}})
+            }, 500);
+            this.data[this.contextLine] = this.formData
+            this.updateVideoList()
+        },
+        modal_exitLogin_ok() {
+            this.$Message.warning('退出登录！')
+            this.$cookies.remove("pwd")
+            this.$cookies.remove("username")
+            this.$router.push('/login')
         }
-
-
     }
 }
 </script>
@@ -287,11 +361,11 @@ export default {
         <Button style="margin-bottom: 10px; width: 80px; margin-left: 20px" type="primary" @click="add">添加
         </Button>
         <Drawer
-                v-model="value"
-                :mask-closable="false"
-                :styles="styles"
-                title="Create"
-                width="730"
+            v-model="value"
+            :mask-closable="false"
+            :styles="styles"
+            title="编辑"
+            width="730"
         >
             <Form :model="formData">
                 <Row :gutter="32">
@@ -344,23 +418,51 @@ export default {
             </div>
         </Drawer>
         <Table
-                :columns="columns"
-                :data="data"
-                border
-                context-menu
-                show-context-menu
-                @on-contextmenu="handleContextMenu"
+            :columns="columns"
+            :data="data"
+            border
+            context-menu
+            show-context-menu
+            @on-contextmenu="handleContextMenu"
         >
             <template #contextMenu>
-                <DropdownItem @click="show">参演列表</DropdownItem>
-                <DropdownItem @click="">编辑</DropdownItem>
-                <DropdownItem style="color: #ed4014" @click="">删除</DropdownItem>
+                <DropdownItem @click="">参演列表</DropdownItem>
+                <DropdownItem @click="updateUser">编辑</DropdownItem>
+                <DropdownItem style="color: #ed4014" @click="deleteUser">删除</DropdownItem>
             </template>
         </Table>
+        <Modal
+            v-model="modal_delete"
+            :loading="model_loading"
+            title="提示"
+            @on-ok="modal_delete_ok">
+            <p>确定删除？</p>
+        </Modal>
+        <Modal
+            v-model="modal_add"
+            :loading="model_loading"
+            title="提示"
+            @on-ok="modal_add_ok">
+            <p>确定添加？</p>
+        </Modal>
+        <Modal
+            v-model="modal_update"
+            :loading="model_loading"
+            title="提示"
+            @on-ok="modal_update_ok">
+            <p>确定更新？</p>
+        </Modal>
+        <Modal
+            v-model="modal_exitLogin"
+            :loading=false
+            title="提示"
+            @on-ok="modal_exitLogin_ok">
+            <p>确定退出登录？</p>
+        </Modal>
     </Content>
 </template>
 
-<style lang="css">
+<style lang="less">
 
 
 .gridtable {

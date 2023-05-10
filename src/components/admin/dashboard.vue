@@ -43,8 +43,6 @@ export default {
             this.$cookies.remove("username")
             this.$router.push('/login')
         }
-
-
     }
 }
 </script>
@@ -77,7 +75,20 @@ export default {
         </Header>
     </div>
     <Content :style="{padding: '0 16px 16px'}">
-
+        <div style="margin: 50px">
+            <NumberInfo status="down" sub-title="总播放量" sub-total="" title="  ">
+                <template #total>
+                    <CountUp :duration="4" :end="50193"/>
+                </template>
+            </NumberInfo>
+        </div>
+        <div style="margin: 50px">
+            <NumberInfo status="down" sub-title="总下载量" sub-total="" title="  ">
+                <template #total>
+                    <CountUp :duration="4" :end="50193"/>
+                </template>
+            </NumberInfo>
+        </div>
     </Content>
 </template>
 
