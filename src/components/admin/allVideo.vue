@@ -337,44 +337,6 @@ export default {
                         </FormItem>
                     </Col>
                 </Row>
-
-                <!--                <Row :gutter="32">-->
-                <!--                    <Col span="32">-->
-                <!--                        -->
-                <!--                    </Col>-->
-                <!--                    <Col span="12">-->
-                <!--                        <FormItem label="Owner" label-position="top">-->
-                <!--                            <Select v-model="formData.owner" placeholder="please select an owner">-->
-                <!--                                <Option value="jobs">Steven Paul Jobs</Option>-->
-                <!--                                <Option value="ive">Sir Jonathan Paul Ive</Option>-->
-                <!--                            </Select>-->
-                <!--                        </FormItem>-->
-                <!--                    </Col>-->
-                <!--                    <Col span="12">-->
-                <!--                        <FormItem label="Type" label-position="top">-->
-                <!--                            <Select v-model="formData.type" placeholder="please choose the type">-->
-                <!--                                <Option value="private">Private</Option>-->
-                <!--                                <Option value="public">Public</Option>-->
-                <!--                            </Select>-->
-                <!--                        </FormItem>-->
-                <!--                    </Col>-->
-                <!--                </Row>-->
-                <!--                <Row :gutter="32">-->
-                <!--                    <Col span="12">-->
-                <!--                        <FormItem label="Approver" label-position="top">-->
-                <!--                            <Select v-model="formData.approver" placeholder="please choose the approver">-->
-                <!--                                <Option value="jobs">Steven Paul Jobs</Option>-->
-                <!--                                <Option value="ive">Sir Jonathan Paul Ive</Option>-->
-                <!--                            </Select>-->
-                <!--                        </FormItem>-->
-                <!--                    </Col>-->
-                <!--                    <Col span="12">-->
-                <!--                        <FormItem label="DateTime" label-position="top">-->
-                <!--                            <DatePicker v-model="formData.date" type="daterange" placeholder="please select the date" style="display: block" placement="bottom-end"></DatePicker>-->
-                <!--                        </FormItem>-->
-                <!--                    </Col>-->
-                <!--                </Row>-->
-
             </Form>
             <div class="demo-drawer-footer">
                 <Button style="margin-right: 8px" @click="value = false">Cancel</Button>
