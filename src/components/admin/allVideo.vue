@@ -322,7 +322,6 @@ export default {
             this.$router.push('/login')
         },
         returnjson(json) {
-            console.log(typeof json)
             if ((typeof json) === 'string') {
                 return JSON.parse(json)
             } else {
