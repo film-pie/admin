@@ -305,7 +305,7 @@ export default {
             setTimeout(() => {
                 this.$router.push({path: this.$route.path, query: {t: Date.now()}})
             }, 500);
-            this.data.push(this.formData)
+            this.data.unshift(this.formData)
             this.updateVideoList()
         },
         modal_update_ok() {
@@ -322,7 +322,8 @@ export default {
             this.$router.push('/login')
         },
         returnjson(json) {
-            if ((typeof json) === String) {
+            console.log(typeof json)
+            if ((typeof json) === 'string') {
                 return JSON.parse(json)
             } else {
                 return json
